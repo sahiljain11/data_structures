@@ -43,6 +43,21 @@ class StringArrayListTests(unittest.TestCase):
         for i in range(3):
             self.assertEqual(arrayList.get(i), str(i))
 
+    def test_get_invalid(self):
+        arrayList = StringArrayList()
+
+        arrayList.add('1')
+
+        self.assertRaises(IndexError, arrayList.get, -1)
+        self.assertRaises(IndexError, arrayList.get, 1)
+
+    def test_remove_invalid(self):
+        arrayList = StringArrayList()
+
+        arrayList.add('1')
+
+        self.assertRaises(IndexError, arrayList.remove, -1)
+        self.assertRaises(IndexError, arrayList.remove, 1)
 
 @unittest.SkipTest
 class StackTest(unittest.TestCase):
