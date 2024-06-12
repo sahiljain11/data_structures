@@ -40,3 +40,6 @@ class GenericStack(Generic[T]):
 
 class StringStack(GenericStack[str]):
     pass
+
+class IntegerStack(GenericStack[int]):
+    pass

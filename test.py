@@ -1,9 +1,8 @@
 import unittest
 
 from ds.arraylist import StringArrayList
-from ds.stack import SizeError, StringStack
+from ds.stack import IntegerStack, SizeError, StringStack
 
-@unittest.SkipTest
 class StringArrayListTests(unittest.TestCase):
 
     def test_empty(self):
@@ -32,7 +31,6 @@ class StringArrayListTests(unittest.TestCase):
         self.assertRaises(IndexError, arrayList.remove, 5)
 
 
-@unittest.SkipTest
 class StackTest(unittest.TestCase):
     
     def test_general_case(self):
@@ -62,6 +60,24 @@ class StackTest(unittest.TestCase):
             for i in range(100):
                 stack.push(str(i))
                 self.assertFalse(stack.is_empty())
+
+    def test_general_case_integers(self):
+        stack = IntegerStack(initial_size=100)
+        self.assertTrue(stack.is_empty())
+
+        # Go forward
+        for i in range(100):
+            stack.push(i)
+            self.assertFalse(stack.is_empty())
+
+        # Go in reverse
+        for i in range(99, -1, -1):
+            self.assertFalse(stack.is_empty())
+            self.assertEqual(stack.peek(), i)
+            self.assertEqual(stack.pop(), i)
+
+        self.assertTrue(stack.is_empty())
+
 
 if __name__ == "__main__":
     unittest.main()
