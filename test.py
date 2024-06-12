@@ -31,6 +31,18 @@ class StringArrayListTests(unittest.TestCase):
         arrayList = StringArrayList()
         self.assertRaises(IndexError, arrayList.remove, 5)
 
+    def test_get_error(self):
+        arrayList = StringArrayList()
+        self.assertRaises(IndexError, arrayList.get, 0)
+
+    def test_get_indices(self):
+        arrayList = StringArrayList()
+        for i in range(5):
+            arrayList.add(str(i))
+        
+        for i in range(3):
+            self.assertEqual(arrayList.get(i), str(i))
+
     def test_get_invalid(self):
         arrayList = StringArrayList()
 
