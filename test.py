@@ -1,6 +1,7 @@
 import unittest
 
 from ds.arraylist import StringArrayList
+from ds.linked_list import GenericLinkedList, StringLinkedList
 from ds.stack import IntegerStack, SizeError, StringStack
 
 class StringArrayListTests(unittest.TestCase):
@@ -10,7 +11,7 @@ class StringArrayListTests(unittest.TestCase):
         self.assertTrue(arrayList.is_empty())
         self.assertEqual(arrayList.size, 0)
 
-    def test_whatever(self):
+    def test_general_case(self):
         arrayList = StringArrayList()
 
         for i in range(9):
@@ -105,6 +106,55 @@ class StackTest(unittest.TestCase):
 
         self.assertTrue(stack.is_empty())
 
+class LinkedListTest(unittest.TestCase):
+
+    def test_empty(self):
+        linked_list = StringLinkedList()
+        self.assertTrue(linked_list.is_empty())
+        self.assertEqual(linked_list.size, 0)
+
+    def test_general_case(self):
+
+        class Circuit:
+            current: float
+            resistance: float
+
+            def __init__(self, current: float, resistance: float):
+                self.current = current
+                self.resistance = resistance
+
+            def voltage(self) -> float:
+                return (self.current / self.resistance)
+
+        linked_list = GenericLinkedList[Circuit]()
+
+        for i in range(500, 2000, 50):
+            new_circuit = Circuit(i * 2.0, i)
+            linked_list.addEnd(new_circuit)
+
+        while not linked_list.is_empty():
+            circuit = linked_list.removeStart()
+            self.assertEqual(circuit.voltage(), 2.0)
+
+        for i in range(0, 2000):
+            new_circuit = Circuit(i * 4.0, i)
+            linked_list.addStart(new_circuit)
+
+        while not linked_list.is_empty():
+            circuit = linked_list.removeEnd()
+            self.assertEqual(circuit.voltage(), 4.0)
+
+        for i in range(0, 2000):
+            new_circuit = Circuit(i * 10.0, i)
+            linked_list.addStart(new_circuit)
+
+        for i in range(0, 2000):
+            new_circuit = Circuit(i * 20.0, i)
+            linked_list.set(new_circuit, i)
+
+        for i in range(0, 2000):
+            new_circuit = linked_list.get(i)
+            self.assertEqual(circuit.voltage(), 20.0)
 
 if __name__ == "__main__":
     unittest.main()
