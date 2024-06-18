@@ -4,6 +4,7 @@ from ds.arraylist import StringArrayList
 from ds.linked_list import GenericLinkedList, StringLinkedList
 from ds.stack import IntegerStack, SizeError, StringStack
 
+
 class StringArrayListTests(unittest.TestCase):
 
     def test_empty(self):
@@ -59,6 +60,7 @@ class StringArrayListTests(unittest.TestCase):
         self.assertRaises(IndexError, arrayList.remove, -1)
         self.assertRaises(IndexError, arrayList.remove, 1)
 
+
 class StackTest(unittest.TestCase):
     
     def test_general_case(self):
@@ -105,6 +107,49 @@ class StackTest(unittest.TestCase):
             self.assertEqual(stack.pop(), i)
 
         self.assertTrue(stack.is_empty())
+
+    def test_push_peek_jz(self):
+        stack = StringStack(initial_size=5)
+        self.assertTrue(stack.is_empty())
+        self.assertRaises(SizeError, stack.peek)
+
+        stack.push("Item 1")
+        self.assertEqual(stack.size, 1)
+        self.assertEqual(stack.peek(), "Item 1")
+        self.assertFalse(stack.is_empty())
+
+        stack.push("Item 2")
+        stack.push("Item 3")
+        self.assertEqual(stack.size, 3)
+        self.assertEqual(stack.peek(), "Item 3")
+
+        stack.push("Item 4")
+        stack.push("Item 5")
+        self.assertRaises(SizeError, stack.push, "Item 6")
+
+    def test_pop_jz(self):
+        stack = IntegerStack(initial_size=10000)
+        self.assertTrue(stack.is_empty())
+        self.assertRaises(SizeError, stack.pop)
+
+        for i in range(10000):
+            stack.push(i)
+
+        self.assertFalse(stack.is_empty())
+
+        self.assertEqual(stack.pop(), 9999)
+        self.assertEqual(stack.size, 9999)
+        self.assertEqual(stack.peek(), 9998)
+
+        stack.push(5)
+        self.assertEqual(stack.peek(), 5)
+        self.assertEqual(stack.pop(), 5)
+
+        for _ in range(9999):
+            stack.pop()
+
+        self.assertRaises(SizeError, stack.pop)
+
 
 class LinkedListTest(unittest.TestCase):
 
@@ -155,6 +200,7 @@ class LinkedListTest(unittest.TestCase):
         for i in range(0, 2000):
             new_circuit = linked_list.get(i)
             self.assertEqual(circuit.voltage(), 20.0)
+
 
 if __name__ == "__main__":
     unittest.main()
