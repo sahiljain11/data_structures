@@ -92,21 +92,25 @@ class StackTest(unittest.TestCase):
     
     def test_errors(self): # testing errors raise properly
         
-        # Popping empty stack
+        # Popping stacks
         with self.assertRaises(SizeError):
             stack = StringStack(initial_size=5)
-            
             self.assertTrue(stack.is_empty())
-            
-            stack.pop()
+            for i in range(5):
+                stack.push(str(i))
+                self.assertFalse(stack.is_empty())
+            # popping stack till crash
+            for i in range(100):
+                stack.pop()
         
         # Peeking empty stack
         with self.assertRaises(SizeError):
             stack = StringStack(initial_size=5)
-            
             self.assertTrue(stack.is_empty())
-            
             stack.peek()
+            
+       
+            
         
     
     def test_duplicate_elements(self): # do duplicate elements get removed properly
