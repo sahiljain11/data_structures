@@ -1,5 +1,5 @@
-
-## Please add two units for each
+# How to create a Pull Request (PR)
+## Please add two tests for each
 
 First, checkout a new branch:
 ```bash
@@ -25,4 +25,10 @@ Then, you'll need to make a Pull Request. Once that pull request has been approv
 ```bash
 git checkout main
 git branch -D <github_username>/<data_structure_name>_tests
+```
+
+# Running Tests
+To run a test, go to `test.py` and select a test class that you would like to run (ex: StringArrayListTests) and run the following:
+```bash
+pyhon test.py StringArrayListTests
 ```
