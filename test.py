@@ -59,8 +59,7 @@ class StringArrayListTests(unittest.TestCase):
 
         self.assertRaises(IndexError, arrayList.remove, -1)
         self.assertRaises(IndexError, arrayList.remove, 1)
-
-
+        
 class StackTest(unittest.TestCase):
     
     def test_general_case(self):
@@ -90,6 +89,41 @@ class StackTest(unittest.TestCase):
             for i in range(100):
                 stack.push(str(i))
                 self.assertFalse(stack.is_empty())
+    
+    def test_errors(self): # testing errors raise properly
+        
+        # Popping stacks
+        with self.assertRaises(SizeError):
+            stack = StringStack(initial_size=5)
+            self.assertTrue(stack.is_empty())
+            for i in range(5):
+                stack.push(str(i))
+                self.assertFalse(stack.is_empty())
+            # popping stack till crash
+            for i in range(100):
+                stack.pop()
+        
+        # Peeking empty stack
+        with self.assertRaises(SizeError):
+            stack = StringStack(initial_size=5)
+            self.assertTrue(stack.is_empty())
+            stack.peek()
+        
+    
+    def test_duplicate_elements(self): # do duplicate elements get removed properly
+        stack = StringStack(initial_size=5)
+        self.assertTrue(stack.is_empty())
+        
+        for i in range(5):
+            stack.push("duplicate")
+            self.assertFalse(stack.is_empty())
+            self.assertEqual(stack.peek(), "duplicate")
+        
+        for i in range(5):
+            self.assertFalse(stack.is_empty())
+            self.assertEqual(stack.pop(), "duplicate")       
+        
+        self.assertTrue(stack.is_empty()) 
 
     def test_general_case_integers(self):
         stack = IntegerStack(initial_size=100)
