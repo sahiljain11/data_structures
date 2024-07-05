@@ -1,8 +1,8 @@
 import unittest
 
 from ds.arraylist import StringArrayList
-from ds.linked_list import GenericLinkedList, StringLinkedList
-from ds.stack import IntegerStack, SizeError, StringStack
+from ds.linked_list import GenericLinkedList, StringLinkedList, IntegerLinkedList, SizeError
+# from ds.stack import IntegerStack, SizeError, StringStack
 
 
 class StringArrayListTests(unittest.TestCase):
@@ -195,15 +195,15 @@ class LinkedListTest(unittest.TestCase):
     def test_general_case(self):
 
         class Circuit:
+            voltage: float
             current: float
-            resistance: float
 
-            def __init__(self, current: float, resistance: float):
+            def __init__(self, voltage: float, current: float):
+                self.voltage = voltage
                 self.current = current
-                self.resistance = resistance
 
-            def voltage(self) -> float:
-                return (self.current / self.resistance)
+            def resistance(self) -> float:
+                return (self.voltage / self.current)
 
         linked_list = GenericLinkedList[Circuit]()
 
@@ -213,27 +213,122 @@ class LinkedListTest(unittest.TestCase):
 
         while not linked_list.is_empty():
             circuit = linked_list.removeStart()
-            self.assertEqual(circuit.voltage(), 2.0)
+            self.assertEqual(circuit.resistance(), 2.0)
 
-        for i in range(0, 2000):
+        for i in range(1, 2000):
             new_circuit = Circuit(i * 4.0, i)
             linked_list.addStart(new_circuit)
 
         while not linked_list.is_empty():
             circuit = linked_list.removeEnd()
-            self.assertEqual(circuit.voltage(), 4.0)
+            self.assertEqual(circuit.resistance(), 4.0)
 
-        for i in range(0, 2000):
+        for i in range(1, 2000):
             new_circuit = Circuit(i * 10.0, i)
             linked_list.addStart(new_circuit)
 
-        for i in range(0, 2000):
+        for i in range(1, 2000):
             new_circuit = Circuit(i * 20.0, i)
-            linked_list.set(new_circuit, i)
+            linked_list.set(new_circuit, i - 1)
 
-        for i in range(0, 2000):
+        for i in range(0, 1999):
             new_circuit = linked_list.get(i)
-            self.assertEqual(circuit.voltage(), 20.0)
+            self.assertEqual(new_circuit.resistance(), 20.0)
+
+
+    def test_adding_jz(self):
+        linked_list = IntegerLinkedList()
+        self.assertTrue(linked_list.is_empty())
+        self.assertEqual(linked_list.size, 0)
+
+        for i in range(100):
+            linked_list.addEnd(i)
+            self.assertEqual(linked_list.get(i), i)
+            self.assertEqual(linked_list.size, i + 1)
+
+        for i in range(100):
+            linked_list.addStart(i)
+            self.assertEqual(linked_list.get(0), i)
+            self.assertEqual(linked_list.size, i + 101)
+
+        linked_list.add(1000, 100)
+        self.assertEqual(linked_list.size, 201)
+        self.assertEqual(linked_list.get(100), 1000)
+        self.assertEqual(linked_list.get(99), 0)
+        self.assertEqual(linked_list.get(101), 0)
+
+        self.assertRaises(IndexError, linked_list.add, 1000, 202)
+        self.assertRaises(IndexError, linked_list.add, 1000, -1)
+
+        linked_list.add(1000, 201)
+        self.assertEqual(linked_list.get(201), 1000)
+        self.assertEqual(linked_list.size, 202)
+
+
+    def test_get_set_jz(self):
+        linked_list = IntegerLinkedList()
+        self.assertTrue(linked_list.is_empty())
+        self.assertEqual(linked_list.size, 0)
+        self.assertRaises(IndexError, linked_list.get, 0)
+
+        for i in range(100):
+            linked_list.addEnd(1)
+            self.assertEqual(linked_list.get(i), 1)
+
+        self.assertRaises(IndexError, linked_list.get, -1)
+
+        for i in range(100):
+            self.assertEqual(linked_list.set(100, i), 1)
+            self.assertEqual(linked_list.get(i), 100)
+            self.assertEqual(linked_list.size, 100)
+
+        self.assertRaises(IndexError, linked_list.set, 1000, 100)
+        self.assertRaises(IndexError, linked_list.set, 1000, -1)
+
+
+    def test_removing_jz(self):
+        linked_list = IntegerLinkedList()
+        self.assertTrue(linked_list.is_empty())
+        self.assertEqual(linked_list.size, 0)
+
+        self.assertRaises(SizeError, linked_list.removeEnd)
+        self.assertRaises(SizeError, linked_list.removeStart)
+        self.assertRaises(IndexError, linked_list.remove, 0)
+        self.assertRaises(SizeError, linked_list.removeVal, 0)
+
+        for i in range(100):
+            linked_list.addEnd(i)
+
+        for i in range(25):
+            self.assertEqual(linked_list.removeEnd(), 99 - i)
+
+        self.assertEqual(linked_list.size, 75)
+
+        for i in range(25):
+            self.assertEqual(linked_list.removeStart(), i)
+
+        self.assertEqual(linked_list.size, 50)
+
+        self.assertEqual(linked_list.remove(25), 50)
+        self.assertEqual(linked_list.get(24), 49)
+        self.assertEqual(linked_list.get(25), 51)
+        self.assertEqual(linked_list.size, 49)
+
+        self.assertRaises(IndexError, linked_list.remove, 49)
+        self.assertRaises(IndexError, linked_list.remove, -1)
+
+        linked_list = IntegerLinkedList()
+
+        for i in range(100):
+            linked_list.addEnd(i)
+
+        self.assertEqual(linked_list.is_empty(), False)
+        
+        self.assertEqual(linked_list.removeVal(5), 5)
+        self.assertEqual(linked_list.size, 99)
+        self.assertEqual(linked_list.get(5), 6)
+        self.assertEqual(linked_list.get(4), 4)
+        self.assertEqual(linked_list.removeVal(101), None)
 
 
 if __name__ == "__main__":
