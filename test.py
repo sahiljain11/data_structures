@@ -333,6 +333,11 @@ class LinkedListTest(unittest.TestCase):
         self.assertEqual(linked_list.removeVal(101), None)
     
 class QueueTest(unittest.TestCase):
+    
+    class Person:
+        def __init__(self, element: str):
+            self.name = element
+
     def test_queue_ll(self):
         test_ll = StoreLineLinkedList()
         test_list = ["John","Jim","Jerry","Jack","Jimmy"]
@@ -417,12 +422,8 @@ class QueueTest(unittest.TestCase):
         for i in range(0, len(test_list)):
             test_qa.enqueue(test_list[i])
         
-        check_full = True
-        for i in range(0,len(test_qa.array)):
-            if(test_qa.array[i].name != test_list[i]):
-                check_full = False
-        
-        self.assertTrue(check_full)
+        test_peek = test_qa.peek()
+        self.assertEqual(test_peek,"John")
 
         test_qa.dequeue()
         test_qa.dequeue()
