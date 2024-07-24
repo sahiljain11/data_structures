@@ -2,7 +2,8 @@ import unittest
 
 from ds.arraylist import StringArrayList
 from ds.linked_list import GenericLinkedList, StringLinkedList, IntegerLinkedList, SizeError
-# from ds.stack import IntegerStack, SizeError, StringStack
+from ds.stack import IntegerStack, StringStack
+from ds.queue import Person, Queue, QueueArray, StoreLineArray, StoreLineDoubleStack, StoreLineLinkedList
 
 
 class StringArrayListTests(unittest.TestCase):
@@ -329,6 +330,94 @@ class LinkedListTest(unittest.TestCase):
         self.assertEqual(linked_list.get(5), 6)
         self.assertEqual(linked_list.get(4), 4)
         self.assertEqual(linked_list.removeVal(101), None)
+    
+class QueueTest(unittest.TestCase):
+    
+    def helper(self, queue: Queue[Person]) -> None:
+        test_list = ["John","Jim","Jerry","Jack","Jimmy"]
+        for val in test_list:
+            queue.enqueue(Person(val))
+
+        for expected in test_list:
+            self.assertEqual(queue.dequeue().name, expected)
+
+        test_list = ["Jerry", "John","Jim","Jerry","Jack","Jimmy"]
+        for val in test_list:
+            queue.enqueue(Person(val))
+        self.assertEqual(queue.peek().name, "Jerry")
+
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+
+        queue.enqueue(Person("Judy"))
+        queue.enqueue(Person("Julie"))
+        queue.enqueue(Person("Ju-di"))
+        queue.dequeue()
+        queue.enqueue(Person("Jolly"))
+        queue.dequeue()
+        queue.enqueue(Person("Judith"))
+        queue.dequeue()
+        queue.enqueue(Person("Ju-lee"))
+        queue.dequeue()
+        queue.enqueue(Person("Jojo"))
+        queue.enqueue(Person("Jaba the hut"))
+        queue.enqueue(Person("Ju-on"))
+        queue.enqueue(Person("JJ"))
+        queue.enqueue(Person("Jujutsu Kaisen"))
+
+        queue.dequeue()
+        queue.dequeue()
+
+        test_list = ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen"]
+
+        for val in test_list:
+            self.assertTrue(queue.dequeue().name, val)
+
+        for i in range(0, 1_000_000):
+            queue.enqueue(Person(name=f'{i}'))
+
+        for i in range(0, 1_000_000):
+            self.assertEqual(queue.peek().name, f'{i}')
+            self.assertEqual(queue.dequeue().name, f'{i}')
+
+        self.assertRaises(Exception, queue.peek)
+        self.assertRaises(Exception, queue.dequeue)
+
+    def test_queue_ll(self):
+        test_ll = StoreLineLinkedList()
+        self.helper(test_ll)
+
+    def test_queue_array(self):
+        test_qa = StoreLineArray(size=1_000_000)
+        self.helper(test_qa)
+
+    def test_queue_array_size_too_large(self):
+
+        class IntegerQueueArray(QueueArray[int]):
+            pass
+
+        test_qa = IntegerQueueArray(size=10)
+
+        test_qa.enqueue(0)
+        test_qa.enqueue(1)
+        test_qa.enqueue(2)
+        test_qa.enqueue(3)
+        test_qa.enqueue(4)
+        test_qa.enqueue(5)
+        test_qa.enqueue(6)
+        test_qa.enqueue(7)
+        test_qa.enqueue(8)
+        test_qa.enqueue(9)
+
+        self.assertRaises(Exception, test_qa.enqueue, 10)
+        
+    def test_queue_double_stack(self):
+        test_ds = StoreLineDoubleStack()
+        self.helper(test_ds)
 
 
 if __name__ == "__main__":
