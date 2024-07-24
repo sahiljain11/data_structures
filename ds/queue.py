@@ -16,7 +16,23 @@ from linked_list import GenericLinkedList as LinkedList
 T = TypeVar('T')
 
 
-class QueueLinkedList(Generic[T]):
+class Queue(Generic[T]):
+
+    def __init__(self) -> None:
+        self.list = LinkedList[T]()
+
+    def enqueue(self, element: T) -> None:
+        pass
+
+    def dequeue(self) -> T:
+        pass
+
+    def peek(self) -> T:
+        pass
+
+
+
+class QueueLinkedList(Queue[T]):
 
     def __init__(self) -> None:
         self.list = LinkedList[T]()
@@ -47,7 +63,7 @@ class QueueLinkedList(Generic[T]):
         pass
 
 
-class QueueArray(Generic[T]):
+class QueueArray(Queue[T]):
 
     def __init__(self, size: int = 10) -> None:
         """
@@ -81,7 +97,7 @@ class QueueArray(Generic[T]):
         """
         pass
     
-class QueueDoubleStack(Generic[T]):
+class QueueDoubleStack(Queue[T]):
 
     """ CHALLENGE MODE PART 2
         Rather than modifying our stack functions like we did above,

@@ -2,9 +2,8 @@ import unittest
 
 from ds.arraylist import StringArrayList
 from ds.linked_list import GenericLinkedList, StringLinkedList, IntegerLinkedList, SizeError
-from ds.queue import StoreLineArray, StoreLineDoubleStack, StoreLineLinkedList
-
-# from ds.stack import IntegerStack, SizeError, StringStack
+from ds.stack import IntegerStack, StringStack
+from ds.queue import Person, Queue, QueueArray, StoreLineArray, StoreLineDoubleStack, StoreLineLinkedList
 
 
 class StringArrayListTests(unittest.TestCase):
@@ -334,195 +333,91 @@ class LinkedListTest(unittest.TestCase):
     
 class QueueTest(unittest.TestCase):
     
-    class Person:
-        def __init__(self, element: str):
-            self.name = element
+    def helper(self, queue: Queue[Person]) -> None:
+        test_list = ["John","Jim","Jerry","Jack","Jimmy"]
+        for val in test_list:
+            queue.enqueue(Person(val))
+
+        for expected in test_list:
+            self.assertEqual(queue.dequeue().name, expected)
+
+        test_list = ["Jerry", "John","Jim","Jerry","Jack","Jimmy"]
+        for val in test_list:
+            queue.enqueue(Person(val))
+        self.assertEqual(queue.peek().name, "Jerry")
+
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+        queue.dequeue()
+
+        queue.enqueue(Person("Judy"))
+        queue.enqueue(Person("Julie"))
+        queue.enqueue(Person("Ju-di"))
+        queue.dequeue()
+        queue.enqueue(Person("Jolly"))
+        queue.dequeue()
+        queue.enqueue(Person("Judith"))
+        queue.dequeue()
+        queue.enqueue(Person("Ju-lee"))
+        queue.dequeue()
+        queue.enqueue(Person("Jojo"))
+        queue.enqueue(Person("Jaba the hut"))
+        queue.enqueue(Person("Ju-on"))
+        queue.enqueue(Person("JJ"))
+        queue.enqueue(Person("Jujutsu Kaisen"))
+
+        queue.dequeue()
+        queue.dequeue()
+
+        test_list = ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen"]
+
+        for val in test_list:
+            self.assertTrue(queue.dequeue().name, val)
+
+        for i in range(0, 1_000_000):
+            queue.enqueue(Person(name=f'{i}'))
+
+        for i in range(0, 1_000_000):
+            self.assertEqual(queue.peek().name, f'{i}')
+            self.assertEqual(queue.dequeue().name, f'{i}')
+
+        self.assertRaises(Exception, queue.peek)
+        self.assertRaises(Exception, queue.dequeue)
 
     def test_queue_ll(self):
         test_ll = StoreLineLinkedList()
-        test_list = ["John","Jim","Jerry","Jack","Jimmy"]
-        test_ll.enqueue("John")
-        test_ll.enqueue("Jim")
-        test_ll.enqueue("Jerry")
-        test_ll.enqueue("Jack")
-        test_ll.enqueue("Jimmy")
-
-        current = test_ll.list.header_node
-        i = 0
-        check_full = True
-        while current != None:
-            if current.val.name != test_list[i]:
-               check_full = False
-            current = current.next
-            i+=1
-        
-        self.assertTrue(check_full)
-
-        test_ll.dequeue()
-        test_ll.dequeue()
-        test_list = ["Jerry","Jack","Jimmy"]
-        current = test_ll.list.header_node
-        i = 0
-        check_part = True
-        while current != None:
-            if current.val.name != test_list[i]:
-               check_part = False
-            current = current.next
-            i+=1
-        
-        self.assertTrue(check_part)
-
-        self.assertTrue(test_ll.peek() == "Jerry")
-
-        test_ll.dequeue()
-        test_ll.dequeue()
-        test_ll.dequeue()
-        test_ll.dequeue()
-        test_ll.dequeue()
-        test_ll.dequeue()
-
-        self.assertTrue(test_ll.list.is_empty())
-
-        test_ll.enqueue("Judy")
-        test_ll.enqueue("Julie")
-        test_ll.enqueue("Ju-di")
-        test_ll.dequeue()
-        test_ll.enqueue("Jolly")
-        test_ll.dequeue()
-        test_ll.enqueue("Judith")
-        test_ll.dequeue()
-        test_ll.enqueue("Ju-lee")
-        test_ll.dequeue()
-        test_ll.enqueue("Jojo")
-        test_ll.enqueue("Jaba the hut")
-        test_ll.enqueue("Ju-on")
-        test_ll.enqueue("JJ")
-        test_ll.enqueue("Jujutsu Kaisen")
-
-        test_ll.dequeue()
-        test_ll.dequeue()
-
-        test_list = ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen",None,None,None,None,None]
-
-        check_fin = True
-        while current != None:
-            if current.val.name != test_list[i]:
-               check_part = False
-            current = current.next
-            i+=1
-        
-        self.assertTrue(check_fin)
-
-
-
+        self.helper(test_ll)
 
     def test_queue_array(self):
-        test_qa = StoreLineArray()
-        test_list = ["John","Jim","Jerry","Jack","Jimmy","Jeremiah","Jeremy","Jan","Jill","Jonny","Jobe"]
-        for i in range(0, len(test_list)):
-            test_qa.enqueue(test_list[i])
-        
-        test_peek = test_qa.peek()
-        self.assertEqual(test_peek,"John")
+        test_qa = StoreLineArray(size=1_000_000)
+        self.helper(test_qa)
 
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
+    def test_queue_array_size_too_large(self):
 
-        self.assertTrue(test_qa.peek() == "Jeremy")
+        class IntegerQueueArray(QueueArray[int]):
+            pass
 
-        test_list = ["Jeremy","Jan","Jill","Jonny"]
+        test_qa = IntegerQueueArray(size=10)
 
-        check_part = True
-        for i in range(0,4):
-            if test_qa.array[i].name != test_list[i]:
-                check_part = False
-        for i in range(4, len(test_qa.array)):
-            if test_qa.array[i] != None:
-                check_part = False
-        
-        self.assertTrue(check_part)
+        test_qa.enqueue(0)
+        test_qa.enqueue(1)
+        test_qa.enqueue(2)
+        test_qa.enqueue(3)
+        test_qa.enqueue(4)
+        test_qa.enqueue(5)
+        test_qa.enqueue(6)
+        test_qa.enqueue(7)
+        test_qa.enqueue(8)
+        test_qa.enqueue(9)
 
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        test_qa.dequeue()
-        self.assertTrue(test_qa.array == [None,None,None,None,None,None,None,None,None,None])
-
-        test_qa.enqueue("Judy")
-        test_qa.enqueue("Julie")
-
-        self.assertTrue(test_qa.array == ["Judy","Julie",None,None,None,None,None,None,None,None])
-
-
-        test_qa.enqueue("Ju-di")
-        test_qa.dequeue()
-        test_qa.enqueue("Jolly")
-        test_qa.dequeue()
-        test_qa.enqueue("Judith")
-        test_qa.dequeue()
-        test_qa.enqueue("Ju-lee")
-        test_qa.dequeue()
-        test_qa.enqueue("Jojo")
-        test_qa.enqueue("Jaba the hut")
-        test_qa.enqueue("Ju-on")
-        test_qa.enqueue("JJ")
-        test_qa.enqueue("Jujutsu Kaisen")
-
-        test_qa.dequeue()
-        test_qa.dequeue()
-
-        self.assertTrue(test_qa.array == ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen",None,None,None,None,None])
-        
+        self.assertRaises(Exception, test_qa.enqueue, 10)
         
     def test_queue_double_stack(self):
         test_ds = StoreLineDoubleStack()
-        test_list = ["John","Jim","Jerry","Jack","Jimmy","Jeremiah","Jeremy","Jan","Jill","Jonny","Jobe"]
-        for i in range(0,len(test_list)):
-            test_ds.enqueue(test_list[i])
-
-        check_full = True
-        for i in range (0,len(test_ds.stack1.stack)):
-            if(test_ds.stack1.stack[i].name != test_list[9-i]):
-                check_full = False
-        self.assertTrue(check_full)
-
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        
-        self.assertTrue(test_ds.peek().name == "Jeremy")
-
-        test_list = ["Jeremy","Jan","Jill","Jonny"]
-
-        check_part = True
-        for i in range(0,6):
-            if test_ds.stack2.stack[i] != None:
-                check_part = False
-        for i in range(6, 10):
-            if test_ds.stack2.stack[i].name != test_list[i-6]:
-                check_part = False
-
-        self.assertTrue(check_part)
-
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-        test_ds.dequeue()
-
-        self.assertTrue(test_ds.stack1.stack == [None,None,None,None,None,None,None,None,None,None])
-        self.assertTrue(test_ds.stack2.stack == [None,None,None,None,None,None,None,None,None,None])
+        self.helper(test_ds)
 
 
 if __name__ == "__main__":
