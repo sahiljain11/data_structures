@@ -2,6 +2,8 @@ import unittest
 
 from ds.arraylist import StringArrayList
 from ds.linked_list import GenericLinkedList, StringLinkedList, IntegerLinkedList, SizeError
+from ds.queue import StoreLineArray, StoreLineDoubleStack, StoreLineLinkedList
+
 # from ds.stack import IntegerStack, SizeError, StringStack
 
 
@@ -332,7 +334,7 @@ class LinkedListTest(unittest.TestCase):
     
 class QueueTest(unittest.TestCase):
     def test_queue_ll(self):
-        test_ll = StoreLineLL()
+        test_ll = StoreLineLinkedList()
         test_list = ["John","Jim","Jerry","Jack","Jimmy"]
         test_ll.enqueue("John")
         test_ll.enqueue("Jim")
@@ -340,7 +342,7 @@ class QueueTest(unittest.TestCase):
         test_ll.enqueue("Jack")
         test_ll.enqueue("Jimmy")
 
-        current = test_ll.list.head
+        current = test_ll.list.header_node
         i = 0
         check_full = True
         while current != None:
@@ -354,7 +356,7 @@ class QueueTest(unittest.TestCase):
         test_ll.dequeue()
         test_ll.dequeue()
         test_list = ["Jerry","Jack","Jimmy"]
-        current = test_ll.list.head
+        current = test_ll.list.header_node
         i = 0
         check_part = True
         while current != None:
@@ -376,12 +378,43 @@ class QueueTest(unittest.TestCase):
 
         self.assertTrue(test_ll.list.is_empty())
 
+        test_ll.enqueue("Judy")
+        test_ll.enqueue("Julie")
+        test_ll.enqueue("Ju-di")
+        test_ll.dequeue()
+        test_ll.enqueue("Jolly")
+        test_ll.dequeue()
+        test_ll.enqueue("Judith")
+        test_ll.dequeue()
+        test_ll.enqueue("Ju-lee")
+        test_ll.dequeue()
+        test_ll.enqueue("Jojo")
+        test_ll.enqueue("Jaba the hut")
+        test_ll.enqueue("Ju-on")
+        test_ll.enqueue("JJ")
+        test_ll.enqueue("Jujutsu Kaisen")
+
+        test_ll.dequeue()
+        test_ll.dequeue()
+
+        test_list = ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen",None,None,None,None,None]
+
+        check_fin = True
+        while current != None:
+            if current.val.name != test_list[i]:
+               check_part = False
+            current = current.next
+            i+=1
+        
+        self.assertTrue(check_fin)
+
+
 
 
     def test_queue_array(self):
         test_qa = StoreLineArray()
         test_list = ["John","Jim","Jerry","Jack","Jimmy","Jeremiah","Jeremy","Jan","Jill","Jonny","Jobe"]
-        for i in range(0,len(test_list)):
+        for i in range(0, len(test_list)):
             test_qa.enqueue(test_list[i])
         
         check_full = True
@@ -418,7 +451,34 @@ class QueueTest(unittest.TestCase):
         test_qa.dequeue()
         test_qa.dequeue()
         test_qa.dequeue()
+        test_qa.dequeue()
         self.assertTrue(test_qa.array == [None,None,None,None,None,None,None,None,None,None])
+
+        test_qa.enqueue("Judy")
+        test_qa.enqueue("Julie")
+
+        self.assertTrue(test_qa.array == ["Judy","Julie",None,None,None,None,None,None,None,None])
+
+
+        test_qa.enqueue("Ju-di")
+        test_qa.dequeue()
+        test_qa.enqueue("Jolly")
+        test_qa.dequeue()
+        test_qa.enqueue("Judith")
+        test_qa.dequeue()
+        test_qa.enqueue("Ju-lee")
+        test_qa.dequeue()
+        test_qa.enqueue("Jojo")
+        test_qa.enqueue("Jaba the hut")
+        test_qa.enqueue("Ju-on")
+        test_qa.enqueue("JJ")
+        test_qa.enqueue("Jujutsu Kaisen")
+
+        test_qa.dequeue()
+        test_qa.dequeue()
+
+        self.assertTrue(test_qa.array == ["Jojo","Jaba the hut","Ju-on","JJ","Jujutsu Kaisen",None,None,None,None,None])
+        
         
     def test_queue_double_stack(self):
         test_ds = StoreLineDoubleStack()
